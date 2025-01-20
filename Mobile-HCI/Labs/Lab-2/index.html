@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
+    <script>
+      // This is an example global variable, which all components can update
+      var click_count = 0;
+      
+      /*
+       * A component defines interactive behaviour that can be assigned to objects
+       * within a scene. For example, this component defines basic button functionality.
+       * It detects button events (cursor enter, cursor leave, click) and uses these
+       * to change the appearance of the button for visual feedback. If a button is
+       * fully selected (i.e., 'clicked'), event-driven behaviour can take place; in
+       * this case, a text label is updated with the identifier for the button.
+       */
+      AFRAME.registerComponent('button', {
+        // Schema defines local variables for each component instance
+        schema: {
+          color: {default: '#003865'},
+          hover: {default: '#005C8A'},
+          click: {default: '#951272'},
+          item_id: {default: '0'}
+        },
+
+        // The init function defines component behaviour
+        init: function () {
+          var data = this.data;
+          var element = this.el;
+          let selectedText = document.querySelector('#text');
+          let shoppingList = document.querySelector('#shopping-list');
+          
+          // Cursor enter callback - updates button colour to show it is targeted
+          element.addEventListener('mouseenter', function () {
+            element.setAttribute('color', data.hover);
+          });
+
+          // Cursor leave callback - resets button colour to its default value
+          element.addEventListener('mouseleave', function () {
+            element.setAttribute('color', data.color);
+          });
+          
+          // Cursor click callback - updates button colour and updates a text label
+          element.addEventListener('click', function () {
+            // functions
+            function getMenuName(itemId) {
+              itemNumber = itemId.charAt(itemId.length-1)
+              if (itemNumber == "1") {
+                return "Burger"
+              } else if (itemNumber == "3") {
+                return "Pizza"
+              } else if (itemNumber == "5") {
+                return "Ice Cream"
+              } else if (itemNumber == "2") {
+                return "Cheeseburger"
+              } else if (itemNumber == "4") {
+                return "Chips"
+              } else if (itemNumber == "6") {
+                return "Drink"
+              }
+
+              return "nope"
+            }
+            
+            ++click_count;
+            
+            element.setAttribute('color', data.click);
+            
+            // Select the label by its id, then update its text value
+            
+            if (data.item_id === "checkout") {
+              // call something idk
+              if (selectedText === "Selected: -") {
+                console.log("Select an item first.");
+                shoppingList.setAttribute('value', "peanut")
+              }
+              else {
+                let currentList = shoppingList.getAttribute('value')
+                let selectedTextContent = selectedText.getAttribute('value')
+                let item = getMenuName(selectedTextContent)
+                console.log(item)
+                shoppingList.setAttribute('value', currentList + "- " + item + "\n")
+              }
+            }
+            else {
+              if (data.item_id === "clear") {
+                output = "Selected: -";
+                shoppingList.setAttribute('value', "")
+              }
+              else {
+                output = "Selected: Item "  + data.item_id;
+              }
+              selectedText.setAttribute("value", output);
+            }
+          });
+        }
+      });
+    </script>
+  </head>
+  <body>    
+    <!-- Create a 3D scene for our menu items -->
+    <a-scene>
+      <!-- Define reusable asset properties -->
+      <a-assets>
+        <!-- Menu item button is a coloured 2D plane with text on top -->
+        <a-mixin id="menu-item" geometry="width: 2; height: 1;" material="color: #003865" text="align: center; anchor: center; baseline: center; color: white; wrap-count: 15;"></a-mixin>
+      </a-assets>
+      
+      <!-- Create cursor with animated visual feedback -->
+      <a-entity camera look-controls>
+        <a-entity
+          animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 100; from: 0.1 0.1 0.1; to: 1 1 1"
+          animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 600; from: 1 1 1; to: 0.1 0.1 0.1"
+          animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 100; to: 1 1 1"
+          cursor="fuse: true; fuseTimeout: 600" material="color: black; shader: flat; opacity: 0.5;" position="0 0 -1" geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.035"></a-entity>
+      </a-entity>
+
+      <!-- Visual feedback label -->
+      <a-text id="text" value="Selected: -" position="0 3.2 -5" scale="2 2 1" color="black" align="center"></a-text>
+      
+      <!-- Clear and Checkout -->
+      <a-plane mixin="menu-item" position="-1.2 2.25 -5" text="value: Checkout; color: #66ff00;" button="item_id: checkout"></a-plane>
+      <a-plane mixin="menu-item" position="1.2 2.25 -5" text="value: Clear; color: red;" button="item_id: clear"></a-plane>
+      
+      <!-- Create menu items -->
+      <a-plane mixin="menu-item" position="-1.2  0.75 -5" text="value: Burger" button="item_id: 1"></a-plane>
+      <a-plane mixin="menu-item" position=" 1.2  0.75 -5" text="value: Cheeseburger" button="item_id: 2"></a-plane>
+      <a-plane mixin="menu-item" position="-1.2 -0.75 -5" text="value: Pizza" button="item_id: 3"></a-plane>
+      <a-plane mixin="menu-item" position=" 1.2 -0.75 -5" text="value: Chips" button="item_id: 4"></a-plane>
+      <a-plane mixin="menu-item" position="-1.2 -2.25 -5" text="value: Ice Cream" button="item_id: 5"></a-plane>
+      <a-plane mixin="menu-item" position=" 1.2 -2.25 -5" text="value: Drink" button="item_id: 6"></a-plane>
+      
+      <a-plane geometry="width: 2; height: 3;" material="color: lightblue" position="2.4 0 -2.5" rotation="0 -45 0">
+        <a-text value="Shopping List \n ----------------------" position="-0.8 1.1 0"></a-text>
+        <a-text id="shopping-list" value="" height="4" position="-0.7 -0.3 0"></a-text>
+      </a-plane>
+      
+    </a-scene>
+  </body>
+</html>
