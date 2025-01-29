@@ -28,7 +28,7 @@ definition by NIST (National Institution of Standard and tech) *a commercial inf
 instead of centralised cloud system being called to for decision making by sensors; cars, IoT devices, smart home devices is non edge distributed systems
 edge would be when the sensors themselves talk amonst themselves without ofloauding to a large system for decision making
 Fog is an intermediate phase
-![[Pasted image 20250114155741.png]]
+![[Fog-Computing.png]]
 ---
 # Characterstics and services of Cloud
 ### Characteristics
@@ -56,7 +56,7 @@ The solution was **VIRTUALISATION**
 Cloud providers give IaaS - allowing users to buy virtualisation of storage, cpu, gpu memory, networking
 Virtulisation takes a real system and creates 1 or more virtual systems
 formal definition shown:
-![[Pasted image 20250114162308.png]]
+![[Guest-Host-Process.png]]
 
 V maps the state of guest to the state of host
 e maps a state of guest to new state of guest, this has a complementary mpaping of host state to new host state
