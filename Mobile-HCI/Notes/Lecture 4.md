@@ -58,7 +58,7 @@ HoverFlow - expands on SideSight
 Image shows that sensor see more reflective inference from the hand when hovered above the sensors - can be used to take input
 
 ### Magnetic Field Sensor
-![[Screenshot 2025-02-03 at 15.36.35.png]]
+![[2D - magnetic.png]]
 
 Similar as infared for expects extra finger magnet attachment
 
